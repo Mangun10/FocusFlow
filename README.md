@@ -128,12 +128,6 @@ Contributions are welcome! Open issues or submit pull requests to help improve F
 
 ---
 
-## 📝 License
-
-No license specified yet.
-
----
-
 ## 🙏 Credits
 
 Developed by [Mangun10](https://github.com/Mangun10)
