@@ -1,5 +1,4 @@
-#<i class="fas fa-hourglass-half"></i> FocusFlow
-
+# ⏳ FocusFlow
 **FocusFlow** is a Chrome Extension designed to help you manage your daily time blocks efficiently. It provides a timeline-based visualization of your day and offers actionable insights for improved productivity, focus, and self-care. Whether you're a student, professional, or anyone looking to optimize your routine, FocusFlow gives you a clear, at-a-glance view and analytics of your day.
 
 ---
