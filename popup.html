@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FocusFlow</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header with navigation -->
+    <header>
+      <div class="logo">
+        <i class="fas fa-hourglass-half"></i>
+        <h1>FocusFlow</h1>
+      </div>
+      <nav>
+        <ul>
+          <li class="active" data-tab="schedule">
+            <i class="fas fa-calendar-day"></i>
+            <span>Schedule</span>
+          </li>
+          <li data-tab="current">
+            <i class="fas fa-play-circle"></i>
+            <span>Current</span>
+          </li>
+          <li data-tab="analytics">
+            <i class="fas fa-chart-pie"></i>
+            <span>Analytics</span>
+          </li>
+          <li data-tab="settings">
+            <i class="fas fa-cog"></i>
+            <span>Settings</span>
+          </li>
+        </ul>
+      </nav>
+    </header>
+
+    <!-- Main content area -->
+    <main>
+      <!-- Schedule Tab -->
+      <section id="schedule" class="tab-content active">
+        <div class="tab-header">
+          <h2>Daily Schedule</h2>
+          <div class="date-display" id="current-date"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3>Enter Your Schedule</h3>
+            <div class="format-switch">
+              <button class="format-btn active" data-format="text">Text</button>
+              <button class="format-btn" data-format="json">JSON</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div id="text-input" class="format-panel active">
+              <textarea id="schedule-input" placeholder="Enter your schedule in this format:
+6:00 - 6:15 AM: Wake Up
+6:45 - 7:30 AM: DSA Practice
+7:30 - 8:00 AM: Breakfast"></textarea>
+            </div>
+            <div id="json-input" class="format-panel">
+              <textarea id="json-schedule-input" placeholder='Enter your schedule in JSON format:
+[
+  {
+    "startTime": "6:00 AM",
+    "endTime": "6:15 AM",
+    "task": "Wake Up"
+  },
+  {
+    "startTime": "6:45 AM",
+    "endTime": "7:30 AM",
+    "task": "DSA Practice"
+  }
+]'></textarea>
+            </div>
+            <div class="button-group">
+              <button id="parse-button" class="primary-btn">
+                <i class="fas fa-magic"></i> Parse Schedule
+              </button>
+              <button id="example-button" class="secondary-btn">
+                <i class="fas fa-lightbulb"></i> Load Example
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div id="status-message" class="status-message"></div>
+
+        <div class="card mt-20">
+          <div class="card-header">
+            <h3>Your Schedule</h3>
+          </div>
+          <div class="card-body">
+            <div id="parsed-output" class="time-blocks">
+              <!-- Time blocks will be inserted here -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Current Task Tab -->
+      <section id="current" class="tab-content">
+        <div class="tab-header">
+          <h2>Current Activity</h2>
+          <div class="time-display" id="current-time"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header highlight">
+            <h3>Current Task</h3>
+            <span id="current-task-time">--:-- to --:--</span>
+          </div>
+          <div class="card-body">
+            <div id="no-current-task" class="empty-state">
+              <i class="fas fa-coffee"></i>
+              <p>No active task right now</p>
+            </div>
+            <div id="current-task-details" style="display: none;">
+              <h3 id="current-task-name" class="task-name">Task Name</h3>
+              <div class="progress-container">
+                <div class="progress-bar" id="task-progress"></div>
+              </div>
+              <div class="progress-stats">
+                <span id="time-remaining">-- minutes remaining</span>
+                <span id="progress-percentage">0%</span>
+              </div>
+              <div class="task-actions">
+                <button class="action-btn complete-btn" id="complete-task">
+                  <i class="fas fa-check"></i> Complete
+                </button>
+                <button class="action-btn skip-btn" id="skip-task">
+                  <i class="fas fa-forward"></i> Skip
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mt-20">
+          <div class="card-header">
+            <h3>Next Up</h3>
+          </div>
+          <div class="card-body">
+            <div id="no-next-task" class="empty-state">
+              <i class="fas fa-calendar-times"></i>
+              <p>No upcoming tasks scheduled</p>
+            </div>
+            <div id="next-task-details" style="display: none;">
+              <div class="task-item">
+                <div class="task-time" id="next-task-time">--:-- to --:--</div>
+                <div class="task-name" id="next-task-name">Next Task</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Analytics Tab -->
+      <section id="analytics" class="tab-content">
+        <div class="tab-header">
+          <h2>Productivity Insights</h2>
+          <div class="period-selector">
+            <button class="period-btn active" data-period="day">Day</button>
+            <button class="period-btn" data-period="week">Week</button>
+            <button class="period-btn" data-period="month">Month</button>
+          </div>
+        </div>
+
+        <div class="stats-cards">
+          <div class="stat-card">
+            <div class="stat-value" id="completion-rate">85%</div>
+            <div class="stat-label">Completion Rate</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="productive-hours">6.5h</div>
+            <div class="stat-label">Productive Time</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="focus-score">75</div>
+            <div class="stat-label">Focus Score</div>
+          </div>
+        </div>
+
+        <div class="card mt-20">
+          <div class="card-header">
+            <h3>Time Distribution</h3>
+          </div>
+          <div class="card-body">
+            <div class="chart-container">
+              <canvas id="time-distribution-chart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mt-20">
+          <div class="card-header">
+            <h3>Category Breakdown</h3>
+          </div>
+          <div class="card-body">
+            <div class="table-container">
+              <table id="category-table">
+                <thead>
+                  <tr>
+                    <th>Category</th>
+                    <th>Time Spent</th>
+                    <th>Completion</th>
+                  </tr>
+                </thead>
+                <tbody id="category-tbody">
+                  <!-- Category rows will be inserted here -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Settings Tab -->
+      <section id="settings" class="tab-content">
+        <div class="tab-header">
+          <h2>Preferences</h2>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3>App Settings</h3>
+          </div>
+          <div class="card-body">
+            <div class="setting-item">
+              <div class="setting-label">Dark Mode</div>
+              <label class="toggle">
+                <input type="checkbox" id="dark-mode-toggle">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="setting-item">
+              <div class="setting-label">24-Hour Format</div>
+              <label class="toggle">
+                <input type="checkbox" id="time-format-toggle">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="setting-item">
+              <div class="setting-label">Notifications</div>
+              <label class="toggle">
+                <input type="checkbox" id="notifications-toggle" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mt-20">
+          <div class="card-header">
+            <h3>Data Management</h3>
+          </div>
+          <div class="card-body">
+            <div class="setting-actions">
+              <button id="export-data" class="secondary-btn full-width">
+                <i class="fas fa-download"></i> Export Data
+              </button>
+              <button id="clear-data" class="danger-btn full-width mt-10">
+                <i class="fas fa-trash"></i> Clear All Data
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mt-20">
+          <div class="card-header">
+            <h3>About</h3>
+          </div>
+          <div class="card-body">
+            <p class="about-text">
+              FocusFlow v1.0<br>
+              A productivity tool to help you manage your time blocks effectively.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Load Chart.js for Analytics -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
